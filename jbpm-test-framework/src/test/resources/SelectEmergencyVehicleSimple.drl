@@ -1,0 +1,33 @@
+package org.jbpm.test.examples;
+
+import org.jbpm.test.model.Ambulance;
+import org.jbpm.test.model.Vehicle;
+import org.jbpm.test.model.FireTruck;
+import org.jbpm.test.model.Emergency;
+import org.drools.runtime.process.WorkflowProcessInstance;
+
+rule "New Ambulance for Heart Attack Emergencies"
+    ruleflow-group "select_vehicle"
+    when
+        $process: WorkflowProcessInstance()
+        Emergency(type == "Heart Attack") from $process.getVariable("emergency")
+
+    then
+        System.out.println("A new Ambuance is being created!");
+        Ambulance ambulance = new Ambulance("MyAmbulance");
+        $process.setVariable("vehicle", ambulance);
+        insert(ambulance);
+end
+
+rule "New Fire Truck for Fire Emergencies"
+    ruleflow-group "select_vehicle"
+    when
+        $process: WorkflowProcessInstance()
+        Emergency(type == "Fire") from $process.getVariable("emergency")
+
+    then
+        System.out.println("A new FireTruck is being created!");
+        FireTruck fireTruck = new FireTruck("MyFireTruck");
+        $process.setVariable("vehicle", fireTruck);
+        insert(fireTruck);
+end
